@@ -8,6 +8,7 @@ from dataclasses import dataclass
 
 @dataclass
 class DataIngestionConfig:
+
     train_data_path: str = os.path.join('artifacts', 'train.csv')
     test_data_path: str = os.path.join('artifacts', 'test.csv')
     raw_data_path: str = os.path.join('artifacts', 'data.csv')
@@ -34,6 +35,7 @@ class DataIngestion:
             test_set.to_csv(self.ingestion_config.test_data_path, index=False, header=True)
 
             logging.info("Data ingestion completed successfully")
+            print(f"{self.ingestion_config.train_data_path} ,  {self.ingestion_config.test_data_path}")
             return (
                 self.ingestion_config.train_data_path, 
                 self.ingestion_config.test_data_path
