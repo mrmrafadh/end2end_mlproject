@@ -6,6 +6,7 @@ from src.exception import CustomException
 from src.logger import logging
 import dill
 from sklearn.metrics import r2_score
+from sklearn.model_selection import GridSearchCV
 
 def save_object(file_path, obj):
     """
@@ -21,7 +22,7 @@ def save_object(file_path, obj):
     except Exception as e:
         raise CustomException(e, sys)
     
-def evaluate_model(X_train, y_train, X_test, y_test, models):
+def evaluate_model(X_train, y_train, X_test, y_test, models, params):
     """
     Evaluate the performance of different regression models.
     Returns a dictionary with model names as keys and their R2 scores as values.
@@ -30,7 +31,11 @@ def evaluate_model(X_train, y_train, X_test, y_test, models):
     
     try:
         for model_name, model in models.items():
-            model.fit(X_train, y_train)
+            gs = GridSearchCV(model, params[model_name], cv=3)
+            gs.fit(X_train,y_train)
+
+            model.set_params(**gs.best_params_)
+            model.fit(X_train,y_train)
             y_pred = model.predict(X_test)
             r2_value = r2_score(y_test, y_pred)
             model_report[model_name] = r2_value

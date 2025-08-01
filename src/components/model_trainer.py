@@ -45,7 +45,37 @@ class ModelTrainer:
                 "CatBoostRegressor": CatBoostRegressor(verbose=0)
             }
 
-            model_report = evaluate_model(X_train, y_train, X_test, y_test, models)
+            params = {
+                "RandomForestRegressor": {
+                    "n_estimators": [50, 100, 200],
+                    "max_depth": [10, 20, None],
+                    "min_samples_split": [2, 5]
+                    },
+                "AdaBoostRegressor": {
+                    "n_estimators": [50, 100],
+                    "learning_rate": [0.01, 0.1, 1.0]
+                    },
+                "GradientBoostingRegressor": {
+                    "n_estimators": [50, 100 , 200 ], 
+                    "learning_rate": [0.1]
+                    },
+                "LinearRegression": {
+                    "fit_intercept": [True, False],
+                },
+                "KNeighborsRegressor": {"n_neighbors": [5, 10, 15]},
+                "DecisionTreeRegressor": {"max_depth": [10, 20, None]},
+                "XGBRegressor": {
+                    "n_estimators": [100, 200], 
+                    "learning_rate": [0.1, 0.01, 0.001],
+                    "max_depth": [3, 5, 7]
+                                 },
+                "CatBoostRegressor": {
+                    "iterations": [100, 200], 
+                    "learning_rate": [0.1, 0.01],
+                    }
+            }
+
+            model_report = evaluate_model(X_train, y_train, X_test, y_test, models, params)
 
             # Get the key of the best-performing model
             best_model_name = max(model_report, key=model_report.get)
